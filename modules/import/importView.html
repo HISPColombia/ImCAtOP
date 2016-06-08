@@ -1,0 +1,94 @@
+﻿<br />
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3>{{'LABEL_OPTIONIMPORT'| translate}}</h3>
+                            </div>
+                            <div class="col-md-12 form-group has-success">
+                                <input type="file" accept=".csv" class="form-control" file-change="handler($event,files)" ng-model="MyFiles" ng-disabled="initImport" />
+                            </div>
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-info" ng-click="readFile()" >{{ 'BTN_READ' | translate }}</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer" style="height:200px; overflow: scroll;">
+                        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)"><div style="width:100%; word-wrap:break-word;">{{alert.msg}}</div></alert>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3>{{'LABEL_INFOFILE'| translate}}</h3>
+                        <table class="table table-hover">
+                             <tr>
+                                <th>{{'LABEL_NUMREG'| translate}}</th>
+                                <td>{{numRegister}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>{{'LABEL_STRATEGY'| translate}}</label><br />
+                                <input type="radio" name="verb" ng-model="webStrategy" value="CREATE" ng-checked="true" ng-disabled="readyForImport">CREATE
+                                <input type="radio" name="verb" ng-model="webStrategy" value="CREATE_AND_UPDATE" ng-disabled="readyForImport">CREATE_AND_UPDATE 
+                                <input type="radio" name="verb" ng-model="webStrategy" value="UPDATE" ng-disabled="readyForImport">UPDATE
+                                <input type="radio" name="verb" ng-model="webStrategy" value="DELETE" ng-disabled="readyForImport">DELETE
+                            </div>
+                            <div class="col-md-6">
+                                <br />
+                                {{'LABEL_NUMINIT'| translate}} <input type="text" ng-model="numposition" value="0" id="init"  ng-disabled="readyForImport" size="2"/><span>  </span><button type="button" class="btn btn-info" ng-click="startImport(numposition)" ng-disabled="readyForImport">{{'BTN_IMPORT_START'| translate}}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-7">
+        <progressbar class="progress-striped active" max="100" value="kon" type="success"><i>{{kon}}</i></progressbar>
+    </div>
+    <div class="col-md-5">
+        <button class="btn btn-success" type="button" ng-disabled="true">
+            {{'LABEL_GOODIMPORT' | translate}} <span class="badge">{{objImported}}</span>
+        </button>
+        <button class="btn btn-danger" type="button" ng-disabled="true">
+            {{'LABEL_IGNORED' | translate}} <span class="badge">{{objIgnored}}</span>
+        </button>
+        <button class="btn btn-info" type="button" ng-disabled="true">
+            {{'LABEL_UPDATED' | translate}} <span class="badge">{{objUpdated}}</span>
+        </button>
+        <button class="btn btn-warning" type="button" ng-disabled="true">
+            {{'LABEL_DELETED' | translate}} <span class="badge">{{objDeleted}}</span>
+        </button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-11">
+        <div style="height:70%; overflow-y:scroll;">
+            <table class="table table-condensed">
+                <tr>
+                    <th>  </th>
+                <th class="text-center"><h3>{{'LIST_RESPONSE' | translate}}</h3></th>
+                </tr>
+
+                <tr ng-repeat="resp in ImportResult track by $index">
+                    <td width="2%" class="label-{{ImportResultColor[$index]}}"></td>
+                    <td  width="98%"><json-explorer data="resp"></json-explorer></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
