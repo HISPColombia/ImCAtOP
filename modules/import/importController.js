@@ -1,8 +1,8 @@
-﻿appImport.controller('importController', ['$scope', '$filter','$q', 'commonvariable','categoryOptions', function ($scope, $filter,$q, commonvariable,categoryOptions) {
+﻿appImport.controller('importController', ['$scope', '$filter', '$q', '$modal', 'commonvariable', 'categoryOptions', function ($scope, $filter, $q,$modal, commonvariable, categoryOptions) {
 
     //variables
     var $translate = $filter('translate');
-    $scope.readed = true;
+    $scope.loading = false;
     $scope.alerts = [{ type: "warning", msg: $translate("MSG_INTRO") }];
     $scope.readyForImport = true;
     $scope.ImportResult = [];
@@ -15,12 +15,34 @@
     $scope.objDeleted = 0;
     $scope.objImported = 0;
     
+
     var dhisResources = {
         "categotyOptions": categoryOptions
     };
 
 
     ///methods
+
+    // crelar variable
+    $scope.ClearForm = function () {
+        $scope.Importfinished = false;
+        $scope.kon = 0;
+        $scope.readyForImport = false;
+        $scope.objIgnored = 0;
+        $scope.objUpdated = 0;
+        $scope.objDeleted = 0;
+        $scope.objImported = 0;
+        $scope.numposition = 0;
+        $scope.readyForImport = true;
+        $scope.ImportResult = [];
+        $scope.ImportResultColor = [];
+        $scope.numposition = 0;
+        $scope.webStrategy = "CREATE";
+        $scope.loading = false;
+        $scope.numRegister = 0;
+        $scope.alerts = [{ type: "warning", msg: $translate("MSG_INTRO") }];
+        $scope.dataforImport = { "categoryOptions": [] };
+    }
 
     $scope.closeAlert = function (index) {
         $scope.alerts.splice(index, 1);
@@ -31,12 +53,27 @@
     };
 
     $scope.handler = function (e, files) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            var string = reader.result;
-            $scope.conten = string;
-            $scope.readed = false;
-            //
+        try{
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var string = reader.result;
+                $scope.conten = string;
+                $scope.loading = false;
+                //
+                $scope.Importfinished = false;
+                $scope.kon = 0;
+                $scope.readyForImport = false;
+                $scope.objIgnored = 0;
+                $scope.objUpdated = 0;
+                $scope.objDeleted = 0;
+                $scope.objImported = 0;
+                $scope.ImportResult = [];
+          
+            }
+            reader.readAsText(files[0]);
+        }
+        catch (err) {
+            $scope.loading = false;
             $scope.Importfinished = false;
             $scope.kon = 0;
             $scope.readyForImport = false;
@@ -45,11 +82,8 @@
             $scope.objDeleted = 0;
             $scope.objImported = 0;
             $scope.ImportResult = [];
-          
         }
-        reader.readAsText(files[0]);
     }
-
     $scope.validationDate = function (value) {
         var defered = $q.defer();
         var promise = defered.promise;
@@ -126,6 +160,7 @@
 
 
     $scope.readFile = function () {
+        $scope.ClearForm()
         $scope.alerts = [];
         $scope.readyForImport = "init";
         try {
@@ -188,6 +223,7 @@
         
     }
     $scope.startImport = function (position) {
+        $scope.loading = true;
         //disable button
         $scope.readyForImport = true;
         //progress Bar
@@ -202,7 +238,12 @@
             $scope.objUpdated = $scope.objUpdated + resp.response.importCount.updated * 1;
             $scope.objDeleted = $scope.objDeleted + resp.response.importCount.deleted * 1;
             $scope.objImported = $scope.objImported + resp.response.importCount.imported * 1;
-
+            $scope.objResponses = {
+                Ignored: $scope.objIgnored,
+                Updated: $scope.objUpdated,
+                Deleted: $scope.objDeleted,
+                Imported: $scope.objImported
+            };
             //change Color 
             if (resp.response.importCount.ignored == 1)
                 $scope.ImportResultColor[position] = "danger";
@@ -214,15 +255,55 @@
                 $scope.ImportResultColor[position] = "success";
             //////
             $scope.ImportResult.push(resp.response)
-            if (position <= $scope.dataforImport.categoryOptions.length - 1)
+            if (position < $scope.dataforImport.categoryOptions.length - 1){
+                $scope.loading = false;
                 $scope.startImport(position + 1);
+            }
+                
             else {
                 $scope.readyForImport = false;
+                $scope.loading = false;
+                $scope.openmodal($scope.objResponses);
                 $scope.addAlert("success", $translate("MSG_FINISHED"));
             }
         });
    
     }
 
+    ///modal
+
+    $scope.animationsEnabled = true;
+
+    $scope.openmodal = function (obj) {
+
+        var modalInstance = $modal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'ModalFinished.html',
+            controller: 'ModalFinished',
+            backdrop: false,
+             resolve: {
+                obj: function () {
+                    return obj;
+                }
+
+            }
+        });
+
+        modalInstance.result.then(function () {
+            console.log("closed");
+        }, function () {
+
+        });
+    };
+
+   
+
 
 }]);
+
+appImport.controller('ModalFinished', function ($scope, $modalInstance, obj) {
+    $scope.obj = obj;
+    $scope.ok = function () {
+        $modalInstance.close();
+    };
+});

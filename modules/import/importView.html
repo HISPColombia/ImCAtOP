@@ -11,13 +11,14 @@
                                 <h3>{{'LABEL_OPTIONIMPORT'| translate}}</h3>
                             </div>
                             <div class="col-md-12 form-group has-success">
-                                <input type="file" accept=".csv" class="form-control" file-change="handler($event,files)" ng-model="MyFiles" ng-disabled="initImport" />
+                                <input type="file" accept=".csv" class="form-control" file-change="handler($event,files)" id="MyFiles" ng-click="ClearForm()" onclick="document.getElementById('MyFiles').value = ''" ng-model="MyFiles" ng-disabled="initImport" />
                             </div>
                             <div class="col-md-12">
                                 <button type="button" class="btn btn-info" ng-click="readFile()" >{{ 'BTN_READ' | translate }}</button>
                             </div>
                         </div>
                     </div>
+                    <h4>{{'LIST_VALIDATION' | translate}}</h4>
                     <div class="panel-footer" style="height:200px; overflow: scroll;">
                         <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)"><div style="width:100%; word-wrap:break-word;">{{alert.msg}}</div></alert>
                     </div>
@@ -31,7 +32,7 @@
                              <tr>
                                 <th>{{'LABEL_NUMREG'| translate}}</th>
                                 <td>{{numRegister}}</td>
-                            </tr>
+                              </tr>
                         </table>
                     </div>
                     <div class="panel-footer">
@@ -45,7 +46,29 @@
                             </div>
                             <div class="col-md-6">
                                 <br />
-                                {{'LABEL_NUMINIT'| translate}} <input type="text" ng-model="numposition" value="0" id="init"  ng-disabled="readyForImport" size="2"/><span>  </span><button type="button" class="btn btn-info" ng-click="startImport(numposition)" ng-disabled="readyForImport">{{'BTN_IMPORT_START'| translate}}</button>
+                                {{'LABEL_NUMINIT'| translate}} <input type="text" ng-model="numposition" value="0" id="init"  ng-disabled="readyForImport" size="2"/><span>  </span><button type="button" class="btn btn-info" ng-click="startImport(numposition)" ng-disabled="readyForImport">{{'BTN_IMPORT_START'| translate}}</button> <img ng-show="loading" src="./img/loading.gif" width="48px" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <progressbar class="progress-striped {{readyForImport?'Active':''}}" max="100" value="kon" type="{{readyForImport?'warning':'success'}}"><i>{{kon}}{{kon<1?'':'%'}}</i></progressbar>
+                            </div>
+                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-success" type="button" ng-disabled="true">
+                                    {{'LABEL_GOODIMPORT' | translate}} <span class="badge">{{objImported}}</span>
+                                </button>
+                                <button class="btn btn-danger" type="button" ng-disabled="true">
+                                    {{'LABEL_IGNORED' | translate}} <span class="badge">{{objIgnored}}</span>
+                                </button>
+                                <button class="btn btn-info" type="button" ng-disabled="true">
+                                    {{'LABEL_UPDATED' | translate}} <span class="badge">{{objUpdated}}</span>
+                                </button>
+                                <button class="btn btn-warning" type="button" ng-disabled="true">
+                                    {{'LABEL_DELETED' | translate}} <span class="badge">{{objDeleted}}</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -56,31 +79,13 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-7">
-        <progressbar class="progress-striped active" max="100" value="kon" type="success"><i>{{kon}}</i></progressbar>
-    </div>
-    <div class="col-md-5">
-        <button class="btn btn-success" type="button" ng-disabled="true">
-            {{'LABEL_GOODIMPORT' | translate}} <span class="badge">{{objImported}}</span>
-        </button>
-        <button class="btn btn-danger" type="button" ng-disabled="true">
-            {{'LABEL_IGNORED' | translate}} <span class="badge">{{objIgnored}}</span>
-        </button>
-        <button class="btn btn-info" type="button" ng-disabled="true">
-            {{'LABEL_UPDATED' | translate}} <span class="badge">{{objUpdated}}</span>
-        </button>
-        <button class="btn btn-warning" type="button" ng-disabled="true">
-            {{'LABEL_DELETED' | translate}} <span class="badge">{{objDeleted}}</span>
-        </button>
-    </div>
-</div>
+
 <div class="row">
     <div class="col-md-11">
         <div style="height:70%; overflow-y:scroll;">
             <table class="table table-condensed">
                 <tr>
-                    <th>  </th>
+                    <th></th>
                 <th class="text-center"><h3>{{'LIST_RESPONSE' | translate}}</h3></th>
                 </tr>
 
@@ -92,3 +97,28 @@
         </div>
     </div>
 </div>
+
+<script type="text/ng-template" id="ModalFinished.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{'MSG_FINISHED' | translate}}</h3>
+    </div>
+    <div class="modal-body">
+        
+            <label class="lbl lbl-success" type="button" ng-disabled="true">
+                {{'LABEL_GOODIMPORT' | translate}} <span class="badge">{{obj.Imported}}</span>
+            </label>
+            <label class="lbl lbl-danger" type="button" ng-disabled="true">
+                {{'LABEL_IGNORED' | translate}} <span class="badge">{{obj.Ignored}}</span>
+            </label>
+            <label class="lbl lbl-info" type="button" ng-disabled="true">
+                {{'LABEL_UPDATED' | translate}} <span class="badge">{{obj.Updated}}</span>
+            </label>
+            <label class="lbl lbl-warning" type="button" ng-disabled="true">
+                {{'LABEL_DELETED' | translate}} <span class="badge">{{obj.Deleted}}</span>
+            </label>
+    
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">{{'BTN_OK' | translate}}</button>
+    </div>
+</script>
