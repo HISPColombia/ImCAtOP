@@ -98,12 +98,12 @@
 							<div class="col-md-12">
 								<uib-progressbar  ng-show="loading"
 									class="progress-striped {{readyForImport?'Active':''}}">
-									<bar ng-repeat="bar in stacked track by $index"
+									<uib-bar ng-repeat="bar in stacked track by $index"
 										value="bar.value" type="{{bar.type}}">
 									<span ng-show="bar.type=='success'">{{bar.value}}% </span>
 									<span ng-show="bar.value < 100 && bar.type=='success'">{{'MSG_WAITING'| translate}} </span> <span
 										ng-show="bar.value >= 100 && bar.type=='warning'">{{'MSG_WAITING'|
-										translate}} </span></bar>
+										translate}} </span></uib-bar>
 								</uib-progressbar >
 							</div>
 						</div>
@@ -138,8 +138,7 @@
 			<table class="table table-condensed">
 				<tr>
 					<th></th>
-					<th class="text-center"><h3>{{'LIST_RESPONSE' |
-							translate}}</h3></th>
+					<th class="text-center"><h3>{{'LIST_RESPONSE' |	translate}}</h3></th>
 				</tr>
 
 				<tr ng-repeat="resp in ImportResult track by $index">
