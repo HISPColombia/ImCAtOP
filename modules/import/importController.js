@@ -1,4 +1,4 @@
-﻿appImport.controller('importController', ['$scope', '$filter', '$q', '$modal', 'commonvariable', 'categoryOptions', 'metadataImport', function ($scope, $filter, $q, $modal, commonvariable, categoryOptions, metadataImport) {
+﻿appImport.controller('importController', ['$scope', '$filter', '$q', '$uibModal', 'commonvariable', 'categoryOptions', 'metadataImport', function ($scope, $filter, $q, $uibModal, commonvariable, categoryOptions, metadataImport) {
 
     //variables
     var $translate = $filter('translate');
@@ -333,7 +333,7 @@
 
     $scope.openmodal = function (obj) {
 
-        var modalInstance = $modal.open({
+        var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
             templateUrl: 'ModalFinished.html',
             controller: 'ModalFinished',
@@ -358,9 +358,9 @@
 
 }]);
 
-appImport.controller('ModalFinished', function ($scope, $modalInstance, obj) {
+appImport.controller('ModalFinished', function ($scope, $uibModalInstance, obj) {
     $scope.obj = obj;
     $scope.ok = function () {
-        $modalInstance.close();
+    	$uibModalInstance.close();
     };
 });
