@@ -26,8 +26,8 @@ Dhis2Api.constant("urlApi", urlApi);
 
 ////Api Category option
 Dhis2Api.factory("categoryOptions", ['$resource', 'commonvariable', function ($resource, commonvariable) {
-    return $resource(commonvariable.url + "/categoryOptions",
-		{},
+    return $resource(commonvariable.url + "/categoryOptions/:uid",
+		{uid:'@uid'},
 		{
 		    POST: { method: "POST" },
 		    DELETE: { method: "DELETE" },
@@ -35,4 +35,15 @@ Dhis2Api.factory("categoryOptions", ['$resource', 'commonvariable', function ($r
 		    PATCH: { method: "PATCH" }
 		});
 }]);
+
+////Api Category option
+Dhis2Api.factory("metadataImport", ['$resource', 'commonvariable', function ($resource, commonvariable) {
+    return $resource(commonvariable.url + "/metadata",
+		{},
+		{
+		    POST: { method: "POST" }
+		});
+}]);
+
+
 

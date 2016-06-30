@@ -9,7 +9,8 @@
   "MENU_ENTITY": "Import Entities",
   "TITLE_ENTITY": "List Entities imported from local file",
   "BTN_READ": "Validate file",
-  "BTN_IMPORT_START": "Start import",
+  "BTN_IMPORT_BULK_START": "Start Bulk import",
+  "BTN_IMPORT_ONE_START": "Start one by one import",
   "LABEL_OPTIONIMPORT": "Import Options",
   "LABEL_NUMREG":"Number of register",
   "LABEL_INFOFILE": "File Information",
@@ -18,7 +19,7 @@
   "MSG_READYFORIMPORT": "File ready for import",
   "MSG_INTRO": "verify that the csv file has the structute and conent required for data import in DHIS",
   "MSG_FINISHED": "Import Success",
-  "LIST_RESPONSE": "Import Response",
+  "LIST_RESPONSE": "Import Summary",
   "LIST_VALIDATION": "Validation Log",
    "BTN_SAVEERROR": "Save error list",
   "BTN_SAVEJSON": "Save objects don't imported",
@@ -36,5 +37,10 @@
   "MSG_ERRORTEXTUID": "The uid is incorrect, line ",
   "MSG_WARNINGTEXTUID": "Uid Empty, this will be generated automatically, line ",
   "MSG_ERRORDATEFORMAT1": "Start date incorrect, line",
-   "MSG_ERRORDATEFORMAT2": "End date incorrect, line"
+  "MSG_ERRORDATEFORMAT2": "End date incorrect, line",
+  "MSG_WITHOUTID": "Disabled because there are registers without ID",
+  "MSG_WAITING": "Please Wait",
+  
+  "TAB_BULK": "Bulk Import",
+  "TAB_ONE": "One by one Import"
 }

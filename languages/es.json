@@ -9,7 +9,8 @@
   "MENU_ENTITY": "Importar entidades",
   "TITLE_ENTITY": "Lista de Entidades importadas desde archivos locales",
   "BTN_READ": "Validar archivo",
-  "BTN_IMPORT_START": "iniciar importación",
+  "BTN_IMPORT_BULK_START": "Iniciar importación en bloque",
+  "BTN_IMPORT_ONE_START": "Iniciar importación uno a uno",
   "LABEL_OPTIONIMPORT": "Opciones de importación",
   "LABEL_NUMREG":"Número de registros",
   "LABEL_INFOFILE": "información del archivo",
@@ -18,7 +19,7 @@
   "MSG_READYFORIMPORT": "Archivo listo para importar",
   "MSG_INTRO": "Recuerde verficar que el archivo cumpla con la estructura y contenido requerida por DHIS",
   "MSG_FINISHED": "Importación finalizada",
-  "LIST_RESPONSE": "Respuestas de la Importación",
+  "LIST_RESPONSE": "Resumen de la Importación",
   "LIST_VALIDATION": "Log de Validación",
   "BTN_SAVEERROR": "Guardar Lista de Errores",
   "BTN_SAVEJSON": "Guardar objetos no importados",
@@ -33,5 +34,10 @@
   "MSG_ERRORTEXTUID": "El UID es incorrecto, line ",
   "MSG_WARNINGTEXTUID": "Uid en blanco, este será generado automáticamente, linea ",
   "MSG_ERRORDATEFORMAT1": "Fecha inicial incorrecta, linea",
-   "MSG_ERRORDATEFORMAT2": "Fecha final incorrecta, linea"
+  "MSG_ERRORDATEFORMAT2": "Fecha final incorrecta, linea",
+  "MSG_WITHOUTID": "Deshabilitados por que hay Registros sin ID",
+  "MSG_WAITING": "Por favor espere",
+  
+  "TAB_BULK": "Importación en Bloque",
+  "TAB_ONE": "Importación uno a uno"
 }
