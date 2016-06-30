@@ -96,7 +96,7 @@
 						<br />
 						<div class="row">
 							<div class="col-md-12">
-								<uib-progressbar  ng-show="loading"
+								<uib-progress  ng-show="loading"
 									class="progress-striped {{readyForImport?'Active':''}}">
 									<uib-bar ng-repeat="bar in stacked track by $index"
 										value="bar.value" type="{{bar.type}}">
@@ -104,7 +104,7 @@
 									<span ng-show="bar.value < 100 && bar.type=='success'">{{'MSG_WAITING'| translate}} </span> <span
 										ng-show="bar.value >= 100 && bar.type=='warning'">{{'MSG_WAITING'|
 										translate}} </span></uib-bar>
-								</uib-progressbar >
+								</uib-progress>
 							</div>
 						</div>
 						<div class="row">
