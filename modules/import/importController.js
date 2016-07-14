@@ -17,7 +17,16 @@
     $scope.objImported = 0;
     $scope.withoutid = false;
     $scope.stacked = [{ type: 'success', value: 0 }, { type: 'warning', value: 100 }];
-    
+    $scope.adjustment = 1;
+    $scope.objResponses = {
+        Ignored: 0,
+        Updated: 0,
+        Deleted: 0,
+        Imported: 0
+    };
+
+
+
 
     var dhisResources = {
         "categotyOptions": categoryOptions,
@@ -32,10 +41,18 @@
         $scope.Importfinished = false;
         $scope.kon = 0;
         $scope.readyForImport = false;
+        //
         $scope.objIgnored = 0;
         $scope.objUpdated = 0;
         $scope.objDeleted = 0;
         $scope.objImported = 0;
+        $scope.objResponses = {
+            Ignored: 0,
+            Updated: 0,
+            Deleted: 0,
+            Imported: 0
+        };
+
         $scope.numposition = 0;
         $scope.readyForImport = true;
         $scope.ImportResult = [];
@@ -48,6 +65,7 @@
         $scope.alerts = [{ type: "warning", msg: $translate("MSG_INTRO") }];
         $scope.dataforImport = { "categoryOptions": [] };
         $scope.stacked = [{ type: 'success', value: 0 }, { type: 'warning', value: 100 }];
+        $scope.adjustment = 1;
     }
 
     $scope.closeAlert = function (index) {
@@ -55,11 +73,11 @@
     };
 
     $scope.addAlert = function (type, message) {
-        $scope.alerts.push({ type: type, msg: message});
+        $scope.alerts.push({ type: type, msg: message });
     };
 
     $scope.handler = function (e, files) {
-        try{
+        try {
             var reader = new FileReader();
             reader.onload = function (e) {
                 var string = reader.result;
@@ -74,7 +92,7 @@
                 $scope.objDeleted = 0;
                 $scope.objImported = 0;
                 $scope.ImportResult = [];
-          
+
             }
             reader.readAsText(files[0]);
         }
@@ -110,58 +128,71 @@
 
 
     $scope.validation = function (data, position) {
-       
+
         var Error = false;
         var defered = $q.defer();
         var promise = defered.promise;
-            //length of array validation
-        if (data.length != 5) {
-            $scope.addAlert("danger", $translate("MSG_ERRORLENGTH")+ position);
+        //validate Empty row
+        if (data.length == 1 || data[0].trim() == data[5].trim()) {
+            defered.resolve("Empty");
+            return promise;
+        }
+
+
+        //length of array validation
+        if (data.length != 6) {
+            $scope.addAlert("danger", $translate("MSG_ERRORLENGTH") + position);
             Error = true;
         }
-        //Strings Validation
+        //Strings name Validation
         if (data[0] == "" || data[0].trim().length == 0) {
             $scope.addAlert("danger", $translate("MSG_ERRORTEXTNAME") + position + " (" + data[0].trim() + ") ");
             Error = true;
         }
-        //Strings Validation
-        if (data[2] == "" || data[2].trim().length == 0) {
-            $scope.addAlert("danger", $translate("MSG_ERRORTEXTCODE") + position + " (" + data[2].trim() + ") ");
+        //Strings shorname Validation
+        if (data[1] == "" || data[1].trim().length == 0 || data[1].trim().length > 50) {
+            $scope.addAlert("danger", $translate("MSG_ERRORTEXTNAME") + position + " (" + data[1].trim() + ") ");
             Error = true;
         }
 
         //uids validation
-        if ((data[1].trim().length != 11 || isNaN(data[1].substr(0, 1)) == false) && data[1] != "") {
-            $scope.addAlert("danger", $translate("MSG_ERRORTEXTUID") + position + " (" + data[1].trim() + ") ");
+        if ((data[2].trim().length != 11 || isNaN(data[2].substr(0, 1)) == false) && data[2] != "") {
+            $scope.addAlert("danger", $translate("MSG_ERRORTEXTUID") + position + " (" + data[2].trim() + ") ");
             Error = true;
         }
+
         //uids validation
-        if (data[1] == "" || data[1].trim().length == 0) {
+        if (data[2] == "" || data[2].trim().length == 0) {
             $scope.addAlert("warning", $translate("MSG_WARNINGTEXTUID") + position);
             Error = false;
             $scope.withoutid = true;
         }
-        
-        // Dates validation
-          $scope.validationDate(data[3]).then(function (response1) {
-              if (response1 == false) {
-                  $scope.addAlert("danger", $translate("MSG_ERRORDATEFORMAT1") + position + " (" + data[3].trim() + ") ");
-                  Error = true;
-              }
-          });
+        //Strings CODE Validation
+        if (data[3] == "" || data[3].trim().length == 0) {
+            $scope.addAlert("danger", $translate("MSG_ERRORTEXTCODE") + position + " (" + data[3].trim() + ") ");
+            Error = true;
+        }
 
-          $scope.validationDate(data[4]).then(function (response2) {
-             
-              if (response2 == false) {
-                  $scope.addAlert("danger", $translate("MSG_ERRORDATEFORMAT2") + position + " (" + data[4].trim() + ") ");
-                  Error = true;
-              }
+        // Date validation
+        $scope.validationDate(data[4]).then(function (response1) {
+            if (response1 == false) {
+                $scope.addAlert("danger", $translate("MSG_ERRORDATEFORMAT1") + position + " (" + data[4].trim() + ") ");
+                Error = true;
+            }
+        });
 
-              defered.resolve(Error);
+        $scope.validationDate(data[5]).then(function (response2) {
 
-          });
+            if (response2 == false) {
+                $scope.addAlert("danger", $translate("MSG_ERRORDATEFORMAT2") + position + " (" + data[5].trim() + ") ");
+                Error = true;
+            }
 
 
+
+        });
+
+        defered.resolve(Error);
         return promise;
     };
 
@@ -180,35 +211,40 @@
                             $scope.readyForImport = true;
                         }
                         else {
-                            if (datainArray[1].trim().length == 11) {
-                                $scope.dataforImport.categoryOptions.push(
-                                    {
-                                        "id": datainArray[1],
-                                        "name": datainArray[0],
-                                        "shortName": datainArray[0],
-                                        "code": datainArray[2],
-                                        "startDate": datainArray[3],
-                                        "endDate": datainArray[4],
-                                        "organisationUnits": []
-                                    }
-                                  );
-                            }
-                            else {
-                                $scope.dataforImport.categoryOptions.push(
-                                    {
-                                        "name": datainArray[0],
-                                        "shortName": datainArray[0],
-                                        "code": datainArray[2],
-                                        "startDate": datainArray[3],
-                                        "endDate": datainArray[4],
-                                        "organisationUnits": []
-                                    }
-                                  );
-                            }
+                            if (response != "Empty") {
+                                if (datainArray[2].trim().length == 11) {
+                                    $scope.dataforImport.categoryOptions.push(
+                                        {
+                                            "id": datainArray[2],
+                                            "name": datainArray[0],
+                                            "shortName": datainArray[1],
+                                            "code": datainArray[3],
+                                            "startDate": datainArray[4],
+                                            "endDate": datainArray[5],
+                                            "organisationUnits": []
+                                        }
+                                      );
+                                }
+                                else {
+                                    $scope.dataforImport.categoryOptions.push(
+                                        {
+                                            "name": datainArray[0],
+                                            "shortName": datainArray[1],
+                                            "code": datainArray[3],
+                                            "startDate": datainArray[4],
+                                            "endDate": datainArray[5],
+                                            "organisationUnits": []
+                                        }
+                                      );
+                                }
 
+                            } else {
+
+                                $scope.adjustment = $scope.adjustment + 1;
+                            }
                         }
-                        
-                        if (key == arrayImport.length - 1) {
+
+                        if (key >= arrayImport.length - $scope.adjustment) {
                             if ($scope.readyForImport == "init") {
                                 $scope.addAlert("info", $translate("MSG_READYFORIMPORT"));
                                 $scope.readyForImport = false;
@@ -217,17 +253,17 @@
                             }
                         }
                     });
-                    
+
                 }
             });
-            
-           
+
+
 
         } catch (err) {
             $scope.addAlert("danger", $translate("MSG_ERRORFORIMPORT") + err);
             //$scope.readyForImport = true;
         };
-        
+
     }
     $scope.changeStrategy = function (strategy) {
         $scope.webStrategy = strategy;
@@ -235,7 +271,7 @@
     $scope.changeVerb = function (verb) {
         $scope.webVerb = verb;
     };
-    $scope.startImport = function (position,bulk) {
+    $scope.startImport = function (position, bulk) {
         $scope.loading = true;
         //disable button
         $scope.readyForImport = true;
@@ -244,25 +280,25 @@
         $scope.stacked = [{ type: 'success', value: $scope.kon }, { type: 'warning', value: (100 - $scope.kon) }];
         if (bulk == true) {
             var resource = dhisResources.metadataImport.POST;
-            var param = { importStrategy: $scope.webStrategy,identifier:'CODE',importMode:'COMMIT' };
-            var dataValue=$scope.dataforImport;
+            var param = { importStrategy: $scope.webStrategy, identifier: 'CODE', importMode: 'COMMIT' };
+            var dataValue = $scope.dataforImport;
         } else {
             var resource = dhisResources.categotyOptions[$scope.webVerb];
-            var dataValue=$scope.dataforImport.categoryOptions[position];
+            var dataValue = $scope.dataforImport.categoryOptions[position];
             if ($scope.webVerb != "POST")
-                var param = {uid: dataValue.id};
+                var param = { uid: dataValue.id };
         }
-        try{
+        try {
             //Using API        
             resource(param, dataValue).$promise.then(function (resp) {
                 if (bulk == true) {
                     resp["response"] = resp;
                     $scope.ImportResult = resp.importTypeSummaries;
-                }               
-                else {
-                    $scope.ImportResult.push(resp.response);    
                 }
-  
+                else {
+                    $scope.ImportResult.push(resp.response);
+                }
+
                 //// Count
                 $scope.objIgnored = $scope.objIgnored + resp.response.importCount.ignored * 1;
                 $scope.objUpdated = $scope.objUpdated + resp.response.importCount.updated * 1;
@@ -274,7 +310,7 @@
                     Deleted: $scope.objDeleted,
                     Imported: $scope.objImported
                 };
-            
+
 
                 //change Color 
                 if (resp.response.importCount.ignored == 1)
@@ -288,17 +324,17 @@
                 //////
 
 
-                if (position < $scope.dataforImport.categoryOptions.length - 1 && bulk==false) {
-                    $scope.startImport(position + 1,bulk);
+                if (position < $scope.dataforImport.categoryOptions.length - 1 && bulk == false) {
+                    $scope.startImport(position + 1, bulk);
                 }
-                
+
                 else {
                     $scope.stacked = [{ type: 'success', value: 100 }, { type: 'warning', value: 100 }];
-                    $scope.readyForImport = false;                
+                    $scope.readyForImport = false;
                     $scope.openmodal($scope.objResponses);
                     $scope.addAlert("success", $translate("MSG_FINISHED"));
                 }
-            }, function(error) {
+            }, function (error) {
                 $scope.ImportResult.push(error);
                 $scope.ImportResultColor[position] = "danger";
                 if (position < $scope.dataforImport.categoryOptions.length - 1 && bulk == false) {
@@ -338,7 +374,7 @@
             templateUrl: 'ModalFinished.html',
             controller: 'ModalFinished',
             backdrop: false,
-             resolve: {
+            resolve: {
                 obj: function () {
                     return obj;
                 }
@@ -353,7 +389,7 @@
         });
     };
 
-   
+
 
 
 }]);
@@ -361,6 +397,6 @@
 appImport.controller('ModalFinished', function ($scope, $uibModalInstance, obj) {
     $scope.obj = obj;
     $scope.ok = function () {
-    	$uibModalInstance.close();
+        $uibModalInstance.close();
     };
 });
