@@ -272,6 +272,19 @@
         $scope.webVerb = verb;
     };
     $scope.startImport = function (position, bulk) {
+        //clear counters
+        //
+        $scope.objIgnored = 0;
+        $scope.objUpdated = 0;
+        $scope.objDeleted = 0;
+        $scope.objImported = 0;
+        $scope.objResponses = {
+            Ignored: 0,
+            Updated: 0,
+            Deleted: 0,
+            Imported: 0
+        };
+
         $scope.loading = true;
         //disable button
         $scope.readyForImport = true;
